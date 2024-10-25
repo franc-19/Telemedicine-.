@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4; /* Light gray background */
+            color: #333; /* Dark gray text */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px; /* Limit the width of the profile */
+            margin: 50px auto; /* Center the container */
+            padding: 30px; /* Increased padding for a spacious look */
+            background: white; /* White background for the profile */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+            text-align: center; /* Center text */
+        }
+
+        h1 {
+            color: #007bff; /* Blue color for the heading */
+            margin-bottom: 20px; /* Space below the heading */
+            font-size: 28px; /* Font size for heading */
+        }
+
+        p {
+            font-size: 18px; /* Font size for the paragraph */
+            line-height: 1.6; /* Line height for better readability */
+            margin-bottom: 30px; /* Space below the paragraph */
+        }
+
+        .profile-card {
+            background: #e9ecef; /* Light background for the profile card */
+            padding: 20px;
+            border-radius: 10px; /* Rounded corners */
+            margin-bottom: 20px; /* Space below the card */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .logout-button {
+            padding: 10px 20px; /* Padding for the button */
+            background-color: #dc3545; /* Red background for logout */
+            color: white; /* White text */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners for the button */
+            text-decoration: none; /* Remove underline from the link */
+            font-size: 16px; /* Larger text */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition for background color and scaling */
+            cursor: pointer; /* Cursor pointer for better UX */
+        }
+
+        .logout-button:hover {
+            background-color: #c82333; /* Darker red on hover */
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .footer {
+            margin-top: 20px; /* Space above the footer */
+            font-size: 14px; /* Smaller font for footer */
+            color: #666; /* Gray color for footer text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, <%= doctor.email %></h1>
+        <div class="profile-card">
+            <p>Great to have you here! 😊</p>
+            <p>Your role as a doctor is crucial in helping patients achieve better health. Keep up the great work!</p>
+        </div>
+        <a href="/doctors/logout" class="logout-button">Logout</a>
+        <div class="footer">
+            &copy; 2024 Telehealth. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

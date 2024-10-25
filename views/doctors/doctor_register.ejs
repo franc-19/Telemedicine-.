@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4; /* Light gray background */
+            color: #333; /* Dark gray text */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px; /* Increased limit for the form */
+            margin: 50px auto; /* Center the container */
+            padding: 30px; /* Increased padding for a spacious look */
+            background: white; /* White background for the form */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+            text-align: center; /* Center text */
+        }
+
+        h1 {
+            color: #007bff; /* Blue color for the heading */
+            margin-bottom: 20px; /* Space below the heading */
+            font-size: 28px; /* Larger font size for the heading */
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Space between form groups */
+        }
+
+        label {
+            margin-bottom: 5px; /* Space between label and input */
+            font-weight: bold; /* Bold labels */
+            text-align: left; /* Align label to the left */
+        }
+
+        input {
+            padding: 12px; /* Increased padding for input fields */
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 5px; /* Rounded corners for input fields */
+            transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for border color and shadow */
+            width: 100%; /* Full width inputs */
+        }
+
+        input:focus {
+            border-color: #007bff; /* Change border color on focus */
+            outline: none; /* Remove default outline */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a shadow on focus */
+        }
+
+        .btn {
+            padding: 12px; /* Padding for the button */
+            background-color: #007bff; /* Blue background for the button */
+            color: white; /* White text */
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners for the button */
+            cursor: pointer; /* Pointer cursor on hover */
+            font-size: 18px; /* Larger text */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition for background color and scaling */
+        }
+
+        .btn:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .footer {
+            margin-top: 20px; /* Space above the footer */
+            font-size: 14px; /* Smaller font for footer */
+            color: #666; /* Gray color for footer text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doctor Registration</h1>
+        <form action="/doctors/register" method="POST" class="registration-form">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Specialization:</label>
+                <input type="text" id="specialization" name="specialization" required>
+            </div>
+
+            <button type="submit" class="btn">Register Doctor</button>
+        </form>
+        <div class="footer">
+            &copy; 2024 MedHub. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

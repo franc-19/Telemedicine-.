@@ -1,0 +1,82 @@
+<%- include('../layout.ejs'); %> <!-- Include your layout file for consistent styling -->
+
+<style>
+    .appointment-confirmation {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+    }
+
+    h2 {
+        color: #4CAF50; /* Green color for heading */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.5;
+        margin: 10px 0;
+    }
+
+    strong {
+        color: #333; /* Darker color for emphasis */
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 15px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;
+        background-color: #4CAF50; /* Button color */
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #45a049; /* Darker button color on hover */
+    }
+
+    .cancel-appointment {
+        background-color: #f44336; /* Red for cancel button */
+    }
+
+    .cancel-appointment:hover {
+        background-color: #d32f2f; /* Darker red on hover */
+    }
+</style>
+
+<div class="appointment-confirmation">
+    <h2>Your Appointment is Confirmed!</h2>
+    <p><strong>Doctor:</strong> <%= doctorName %></p>
+    <p><strong>Date:</strong> <%= appointmentDate %></p>
+    <p><strong>Time:</strong> <%= appointmentTime %></p>
+    <p><strong>Location:</strong> <%= location %></p>
+    <p><strong>Your Name:</strong> <%= patientName %></p>
+    <p>You will receive a confirmation email shortly.</p>
+    <p>Please arrive 15 minutes early for your appointment.</p>
+
+    <div class="navigation">
+        <a href="/appointments" class="btn">View My Appointments</a>
+        <a href="/profile" class="btn">Go to My Profile</a>
+        <a href="/" class="btn">Return to Home</a>
+    </div>
+
+    <form action="/appointments/cancel" method="POST" style="display: inline;"> <!-- Assuming you have a POST route for cancellation -->
+        <input type="hidden" name="appointmentId" value="<%= appointmentId %>"> <!-- Pass the appointment ID for cancellation -->
+        <button type="submit" class="btn cancel-appointment">Cancel Appointment</button>
+    </form>
+</div>

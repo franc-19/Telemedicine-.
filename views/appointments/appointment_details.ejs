@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            margin: 15px 0;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Your Appointment Details</h1>
+
+        <% if (appointments.length === 0) { %>
+            <div class="alert alert-warning" role="alert">
+                You have no appointments scheduled.
+            </div>
+        <% } else { %>
+            <% appointments.forEach(appointment => { %>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Appointment with Dr. <%= appointment.doctor_name %></h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">Patient Name: <%= appointment.patient_name %></h6>
+                        <p class="card-text"><strong>Date:</strong> <%= appointment.appointment_date %></p>
+                        <p class="card-text"><strong>Time:</strong> <%= appointment.appointment_time %></p>
+                        <p class="card-text"><strong>Status:</strong> <%= appointment.status %></p>
+                        <a href="/appointments/cancel/<%= appointment.id %>" class="btn btn-danger">Cancel Appointment</a>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+
+        <div class="text-center">
+            <a href="/profile" class="btn btn-custom">Back to Profile</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
