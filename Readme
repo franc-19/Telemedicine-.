@@ -100,7 +100,7 @@ telemedicine-app/
 5. **Run the application**:
 
    ```bash
-   npm start
+   node server.js
    ```
 
 6. **Access the application**:
