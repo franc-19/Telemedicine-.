@@ -1,0 +1,146 @@
+
+---
+
+# TeleMed: A Comprehensive Telemedicine Platform
+
+TeleMed is a user-friendly platform designed to connect patients with healthcare providers virtually. This application allows patients to register, search for nearby health centers, book appointments, and consult with doctors online, bridging the gap in healthcare accessibility.
+
+## Features
+
+- **User Registration and Authentication**: Secure login and registration for patients and healthcare providers.
+- **Role Management**: Separate dashboards and functionality for patients, doctors, and admins.
+- **Appointment Booking**: Patients can book appointments with healthcare providers.
+- **Doctor Management**: Admins can manage doctor profiles, schedules, and appointments.
+- **Location-Based Services**: Search for healthcare providers or centers based on patient location.
+- **Interactive User Interface**: A clean, responsive design using HTML, CSS, and JavaScript.
+- **Security Compliance**: Ensures data privacy and protection of patient and provider information.
+
+## Tech Stack
+
+- **Frontend**: HTML, CSS, JavaScript, EJS (for templating)
+- **Backend**: Node.js, Express
+- **Database**: MySQL
+- **Other**: Map integration for location-based services
+
+## Project Structure
+
+The project follows a modular structure:
+
+```
+telemedicine-app/
+├── config/
+│   └── db.js            # Database configuration
+├── controllers/         # Business logic for each model
+│   ├── adminController.js
+│   ├── appointmentController.js
+│   ├── doctorController.js
+│   └── patientController.js
+├── models/              # Database models for each table
+│   ├── adminModel.js
+│   ├── appointmentModel.js
+│   ├── doctorModel.js
+│   └── patientModel.js
+├── routes/              # Routes for handling HTTP requests
+│   ├── adminRoutes.js
+│   ├── appointmentRoutes.js
+│   ├── doctorRoutes.js
+│   └── patientRoutes.js
+├── middleware/
+│   └── authMiddleware.js # Middleware for authentication and authorization
+├── views/               # EJS templates for the frontend
+│   ├── index.ejs
+│   ├── login.ejs
+│   ├── register.ejs
+│   └── profile.ejs
+├── .env                 # Environment variables
+├── package.json         # Project dependencies
+└── server.js            # Application entry point
+```
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** and **npm**: Make sure Node.js and npm are installed on your machine.
+- **MySQL**: Set up a MySQL database for storing user and appointment data.
+
+### Setup
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/yourusername/telemedicine-app.git
+   cd telemedicine-app
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up the MySQL database**:
+
+   - Create a MySQL database named `telemedicine`.
+   - Import the necessary tables for `admin`, `appointments`, `doctors`, and `patients`.
+
+4. **Configure environment variables**:
+
+   - Create a `.env` file in the root directory and add the following information:
+
+     ```plaintext
+     DB_HOST=localhost
+     DB_USER=root
+     DB_PASSWORD=your_password
+     DB_NAME=telemedicine
+     SESSION_SECRET=your_secret_key
+     PORT=3000
+     ```
+
+5. **Run the application**:
+
+   ```bash
+   npm start
+   ```
+
+6. **Access the application**:
+   - Open your browser and go to `http://localhost:3000`.
+
+## Usage
+
+- **Patient**:
+  - Register an account.
+  - Book appointments and search for healthcare providers.
+  - View and manage personal profile and appointments.
+
+- **Doctor**:
+  - Log in to view appointments and manage patient consultations.
+  - Update profile and availability.
+
+- **Admin**:
+  - Manage doctor profiles and user information.
+  - View and control application data from an admin dashboard.
+
+## Future Enhancements
+
+- **Video Consultation**: Integrate video call functionality for remote consultations.
+- **Prescription Management**: Allow doctors to prescribe and manage patient medications.
+- **Payment Integration**: Enable online payments for appointment fees.
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch for your feature: `git checkout -b feature-name`.
+3. Commit your changes: `git commit -m 'Add a new feature'`.
+4. Push to the branch: `git push origin feature-name`.
+5. Submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For questions or support, please reach out to [Franc] (ofranc929@gmail.com).
+
+---

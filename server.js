@@ -2,15 +2,17 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-const mysql = require('mysql2/promise'); // Use mysql2 with promises
+const mysql = require('mysql2/promise');
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator'); // For input validation
-require('dotenv').config(); // Load environment variables
+const { body, validationResult } = require('express-validator');
+const doctorRoutes = require('./routes/doctorRoutes'); // Import doctor routes
+const adminRoutes = require('./routes/adminRoutes'); // Import admin routes
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3000;
 
 // Middleware to parse incoming requests
 app.use(express.urlencoded({ extended: true }));
@@ -18,7 +20,7 @@ app.use(express.json());
 
 // Setup EJS as the templating engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); // Set views directory
+app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files (CSS, JS, images)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,7 +30,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using HTTPS in production
+    cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
 // Create MySQL connection pool
@@ -39,7 +41,7 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'telemedicine',
 });
 
-// Passport JWT strategy for patients
+// Passport JWT strategy
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: process.env.JWT_SECRET || 'your_jwt_secret'
@@ -59,6 +61,12 @@ passport.use(new Strategy(opts, async (jwt_payload, done) => {
 app.use(passport.initialize());
 
 // ===================== ROUTES ===================== //
+
+// Use doctor routes
+app.use('/doctors', doctorRoutes);
+
+// Use admin routes
+app.use('/admin', adminRoutes);
 
 // Centralized error handling middleware
 app.use((err, req, res, next) => {
@@ -221,16 +229,18 @@ app.post('/appointments/cancel/:id', async (req, res) => {
     }
 });
 
-// ===================== ADMIN ROUTES ===================== //
+// ===================== DOCTOR ROUTES ===================== //
 
-// Admin registration
-app.get('/admin/add', (req, res) => {
-    res.render('admin/addAdmin');
+// Doctor registration page
+app.get('/doctors/register', (req, res) => {
+    res.render('doctors/doctor_register'); // Create this view file
 });
 
-// Admin registration logic
-app.post('/admin/add', 
+// Doctor registration logic
+app.post('/doctors/register', 
     [
+        body('first_name').notEmpty().withMessage('First name is required'),
+        body('last_name').notEmpty().withMessage('Last name is required'),
         body('email').isEmail().withMessage('Must be a valid email').normalizeEmail(),
         body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
     ],
@@ -243,74 +253,49 @@ app.post('/admin/add',
         const { first_name, last_name, email, password } = req.body;
 
         try {
-            const [adminExists] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-            if (adminExists.length > 0) {
+            const [userExists] = await pool.query('SELECT * FROM doctors WHERE email = ?', [email]);
+            if (userExists.length > 0) {
                 return res.status(400).json({ message: 'Email already exists' });
             }
 
             const hash = await bcrypt.hash(password, 10);
-            await pool.query('INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES (?, ?, ?, ?, ?)', 
-                [first_name, last_name, email, hash, 'admin']);
+            await pool.query('INSERT INTO doctors (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)', 
+                [first_name, last_name, email, hash]);
             
-            res.redirect('/admin/login');
+            res.redirect('/doctors/login');
         } catch (err) {
-            console.error('Error during admin registration:', err);
+            console.error('Error during registration:', err);
             res.status(500).json({ error: err.message });
         }
 });
 
-// Admin login page
-app.get('/admin/login', (req, res) => {
-    res.render('admin/admin_login');
+// Doctor login page
+app.get('/doctors/login', (req, res) => {
+    res.render('doctors/doctor_login'); // Create this view file
 });
 
-// Admin login logic
-app.post('/admin/login', async (req, res) => {
+// Doctor login logic
+app.post('/doctors/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const [admin] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (admin.length === 0) return res.status(401).json({ message: 'Invalid email or password' });
+        const [user] = await pool.query('SELECT * FROM doctors WHERE email = ?', [email]);
+        if (user.length === 0) return res.status(401).json({ message: 'Invalid email or password' });
 
-        const match = await bcrypt.compare(password, admin[0].password_hash);
+        const match = await bcrypt.compare(password, user[0].password_hash);
         if (!match) return res.status(401).json({ message: 'Invalid email or password' });
 
-        req.session.admin = { id: admin[0].id, email: admin[0].email, role: admin[0].role };
-        res.status(200).json({ message: 'Admin Login successful' });
+        const token = jwt.sign({ id: user[0].id, email: user[0].email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        req.session.user = { id: user[0].id, email: user[0].email, first_name: user[0].first_name, last_name: user[0].last_name, role: user[0].role, token };
+        
+        res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
-        console.error('Error during admin login:', err);
+        console.error('Error during login:', err);
         res.status(500).json({ error: 'Error logging in' });
     }
 });
 
-// Admin dashboard
-app.get('/admin/dashboard', (req, res) => {
-    if (!req.session.admin) return res.redirect('/admin/login');
-    res.render('admin/dashboard', { admin: req.session.admin });
-});
-
-// Admin manage patients
-app.get('/admin/manage', async (req, res) => {
-    if (!req.session.admin) return res.redirect('/admin/login');
-
-    try {
-        const [patients] = await pool.query('SELECT * FROM users WHERE role = "patient"');
-        res.render('admin/manage', { patients });
-    } catch (err) {
-        console.error('Error fetching patients:', err);
-        res.status(500).send('Error fetching patients');
-    }
-});
-
-// Admin logout
-app.get('/admin/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.status(500).send('Error logging out');
-        res.redirect('/admin/login');
-    });
-});
-
 // Start the server
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server is running on http://localhost:${port}`);
 });

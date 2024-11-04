@@ -1,0 +1,56 @@
+<!-- views/doctors/doctors_list.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #007bff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .doctor-list {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .doctor-item {
+            border-bottom: 1px solid #eaeaea;
+            padding: 10px 0;
+        }
+        .doctor-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>List of Doctors</h1>
+    </header>
+    
+    <div class="doctor-list">
+        <% if (doctors && doctors.length > 0) { %>
+            <% doctors.forEach(function(doctor) { %>
+                <div class="doctor-item">
+                    <strong>Name:</strong> <%= doctor.first_name %> <%= doctor.last_name %> <br>
+                    <strong>Specialization:</strong> <%= doctor.specialization %> <br>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p>No doctors found.</p>
+        <% } %>
+    </div>
+</body>
+</html>

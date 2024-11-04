@@ -1,26 +1,12 @@
-// routes/authRoutes.js
-
+// routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-require('dotenv').config(); // Load environment variables
+const adminController = require('../controllers/adminController');
+const authMiddleware = require('../middleware/authMiddleware'); // Ensure this middleware is used
 
-// Render the login form
-router.get('/login', (req, res) => {
-    res.render('auth/login'); // Render the login view
-});
+// Route to show the admin dashboard
+router.get('/dashboard', authMiddleware, adminController.showDashboard); // Protect this route with middleware
 
-// Handle login request
-router.post('/login', authController.login); // Delegate login logic to authController
-
-// Logout route
-router.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ message: 'Could not log out' });
-        }
-        res.redirect('/'); // Redirect to home page after logout
-    });
-});
+// Add other admin-related routes here as needed
 
 module.exports = router;

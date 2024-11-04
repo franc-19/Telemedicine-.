@@ -1,4 +1,3 @@
-// controllers/appointmentController.js
 const Appointment = require('../models/appointmentModel');
 const db = require('../config/db'); // Ensure to import your database connection
 
@@ -13,41 +12,54 @@ exports.showBookingForm = (req, res) => {
         if (!doctors.length) {
             return res.status(404).send('No doctors available');
         }
-        res.render('book_appointment', { doctors }); // Pass doctors to the booking view
+        res.render('appointments/book_appointment', { doctors }); // Ensure correct path to your view
     });
 };
 
 // Schedule a new appointment
 exports.scheduleAppointment = (req, res) => {
-    if (!req.user || !req.user.email) {
-        return res.status(400).send('User not authenticated');
+    // Check if the user is authenticated
+    if (!req.session.user || !req.session.user.email) {
+        return res.status(401).send('User not authenticated');
     }
 
     const newAppointment = {
-        patient_name: req.user.email, // Assuming you have user authentication set up
+        patient_name: `${req.session.user.first_name} ${req.session.user.last_name}`, // Use session user data
         doctor_id: req.body.doctor, // Capture doctor ID from the form submission
         appointment_date: req.body.date, // Capture date from the form submission
         appointment_time: req.body.time, // Capture time from the form submission
     };
 
-    Appointment.create(newAppointment, (error, result) => {
+    // Insert the appointment into the database
+    db.query('INSERT INTO appointments SET ?', newAppointment, (error, result) => {
         if (error) {
             console.error('Error scheduling appointment:', error);
             return res.status(500).send('Error scheduling appointment');
         }
-        res.redirect('/appointments'); // Redirect to the appointments page after scheduling
+        
+        // After successfully scheduling, render the confirmation page
+        res.render('appointments/appointment_confirmation', {
+            doctorName: req.body.doctor, // You may want to query for the doctor's name separately
+            appointmentDate: req.body.date,
+            appointmentTime: req.body.time,
+            location: 'Online Consultation',
+            patientName: newAppointment.patient_name,
+            session: req.session.user // Pass the session data to the confirmation page
+        });
     });
 };
 
 // Get all appointments for the user
 exports.getAppointments = (req, res) => {
-    if (!req.user || !req.user.email) {
-        return res.status(400).send('User not authenticated');
+    // Check if the user is authenticated
+    if (!req.session.user || !req.session.user.email) {
+        return res.status(401).send('User not authenticated');
     }
 
     const query = 'SELECT * FROM appointments WHERE patient_name = ?'; // Ensure you filter appointments by user
-    db.query(query, [req.user.email], (error, appointments) => { // Assuming req.user.email contains the user's email
+    db.query(query, [req.session.user.first_name + ' ' + req.session.user.last_name], (error, appointments) => { // Use the full name for filtering
         if (error) {
+            console.error('Error fetching appointments:', error);
             return res.status(500).send('Error fetching appointments');
         }
         res.render('appointments', { appointments }); // Render appointments view with fetched data
@@ -58,8 +70,9 @@ exports.getAppointments = (req, res) => {
 exports.cancelAppointment = (req, res) => {
     const appointmentId = req.params.id;
 
-    Appointment.cancel(appointmentId, (error, result) => {
+    db.query('DELETE FROM appointments WHERE id = ?', [appointmentId], (error, result) => {
         if (error) {
+            console.error('Error canceling appointment:', error);
             return res.status(500).send('Error canceling appointment');
         }
         res.redirect('/appointments'); // Redirect to the appointments page after cancellation

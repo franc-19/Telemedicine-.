@@ -90,15 +90,29 @@ exports.updateAdmin = (req, res) => {
     const updateData = { username };
     
     if (password) {
-        updateData.password_hash = bcrypt.hashSync(password, 10);
-    }
+        // If a new password is provided, hash it before updating
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) {
+                return res.status(500).json({ error: err });
+            }
+            updateData.password_hash = hash;
 
-    Admin.update(id, updateData, (error) => {
-        if (error) {
-            return res.status(500).json({ error: error.sqlMessage });
-        }
-        res.redirect('/admin/manage'); // Redirect to manage admins after successful edit
-    });
+            Admin.update(id, updateData, (error) => {
+                if (error) {
+                    return res.status(500).json({ error: error.sqlMessage });
+                }
+                res.redirect('/admin/manage'); // Redirect to manage admins after successful edit
+            });
+        });
+    } else {
+        // Update only the username if no new password is provided
+        Admin.update(id, updateData, (error) => {
+            if (error) {
+                return res.status(500).json({ error: error.sqlMessage });
+            }
+            res.redirect('/admin/manage'); // Redirect to manage admins after successful edit
+        });
+    }
 };
 
 // Delete an admin
